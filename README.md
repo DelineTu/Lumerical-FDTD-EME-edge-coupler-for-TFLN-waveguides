@@ -18,6 +18,7 @@ The primary objective is to enable high-efficiency coupling for balanced homodyn
 <td><img src="https://github.com/user-attachments/assets/e3206b23-5970-4628-918b-07856aaba85d" width="800" /></td>
 
 #### Aspheric / Elliptical Designs
+
 Because TFLN modes are highly anisotropic and non-circular, this project investigates:
 - Aspheric lens geometries for near-circular collimation
 - Elliptical collimators to reshape guided modes into target Gaussian beams
@@ -35,6 +36,8 @@ Used for low-loss coupling from chip → lensed fiber → homodyne detector.
 <td><img src="https://github.com/user-attachments/assets/5e274c95-e55e-4f50-94f0-d6313852a0bc" width="500" /></td>
 
 <td><img src="https://github.com/user-attachments/assets/9beeb9a5-8cac-4aec-8cea-83faa3c2a218" width="500" /></td>
+
+<td><img src="https://github.com/user-attachments/assets/3eb89bc7-42e1-4cad-b214-75edb0f31cde" width="500" /></td>
 
 ### Goal 2 - Free-Space Balanced Detection
 
