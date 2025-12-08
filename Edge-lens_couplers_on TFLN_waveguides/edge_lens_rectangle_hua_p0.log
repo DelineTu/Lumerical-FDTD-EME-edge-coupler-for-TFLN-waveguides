@@ -1,0 +1,97 @@
+GPU streaming multiprocessors(SMs): 24
+Ansys Lumerical 2024 R1 FDTD Solver Version 8.31.3633 (Windows 64bit)
+ expires (month/day/year): 12/31/2035
+using config file: Ansys Licensing set with ANSYSLMD_LICENSE_FILE
+license host: 1055@localhost
+current time: 周六 11月 15 06:32:01 2025
+Running on host: Hua_Tu
+host available memory (GB): 12.988113
+All processes are communicating and ready to proceed to simulation...
+Running fsp file: D:\Program Files\Lumerical\v241\bin\fdtd-engine.exe -gpu -t 1 -remote -shared-solve-license QU5TWVNfTElDRU5TSU5HX0NPTlRFWFRfREFUQT08QU5TWVNfTElDRU5TSU5HX0NPTlRFWFRfREFUQT48SUQ+ZmQzNDIwMjgtMjRhNi00YjBjLWI5NDItNTEwZmUyN2IwYTIzPC9JRD48VFlQRT5IUENfUEFSQU1FVFJJQzwvVFlQRT48TkFNRT5IUEMgUGFyYW1ldHJpYzwvTkFNRT48SEFORExFUj41Mzc2N0BIdWFfVHU8L0hBTkRMRVI+PC9BTlNZU19MSUNFTlNJTkdfQ09OVEVYVF9EQVRBPgo= E:/FDTD_Files/edge_lens_rectangle_hua.fsp
+Starting meshing
+Simulation size in gridpoints: 1 x 27 x 102
+Refined 0 mesh cells (0%)
+Completed meshing!
+Meshing complete in 0 seconds of CPU time
+Starting meshing
+Simulation size in gridpoints: 1 x 27 x 102
+Refined 0 mesh cells (0%)
+Completed meshing!
+Meshing complete in 0 seconds of CPU time
+Starting meshing
+Simulation size in gridpoints: 1 x 27 x 102
+Refined 0 mesh cells (0%)
+Completed meshing!
+Meshing complete in 0 seconds of CPU time
+number of processors is 1
+processors are distributed as: 1x1x1
+Running 3D Simulation
+Starting meshing
+Simulation size in gridpoints: 450 x 418 x 255
+Refined 0 mesh cells (0%)
+Completed meshing!
+Meshing complete in 4.51562 seconds of CPU time
+Starting meshing
+Simulation size in gridpoints: 450 x 418 x 255
+Refined 0 mesh cells (0%)
+Completed meshing!
+Meshing complete in 4.59375 seconds of CPU time
+Starting meshing
+Simulation size in gridpoints: 450 x 418 x 255
+Refined 0 mesh cells (0%)
+Completed meshing!
+Meshing complete in 4.375 seconds of CPU time
+finished material properties
+Meshing Time: 34.0118 seconds, Init Electrical Material Time: 0 seconds, Init Magnetic Material Time: 0
+Using selected optimization level: 2
+Selecting 3d kernel for splitFieldDirection=0 and optLevel=2
+-----------------------------------------
+Beginning initialization of 3D Simulation
+Starting to add sources to simulation
+Adding 3D Mode source propagating in X
+Starting to add boundary conditions to simulation
+Adding 3D PML BC
+Adding 3D PML BC
+Adding 3D PML BC
+Adding 3D PML BC
+Adding 3D PML BC
+Adding 3D PML BC
+Starting to add monitors to Simulation
+Adding analysis monitor
+Adding 3D DFT monitor
+Adding 3D DFT monitor
+Adding 3D DFT monitor
+Adding 3D DFT monitor
+Adding 3D DFT monitor
+Adding 3D DFT monitor
+Adding 3D DFT monitor
+Adding 3D DFT monitor
+Adding 3D DFT monitor
+Adding 3D DFT monitor
+Finished initialization of 3D Simulation
+-----------------------------------------
+All processes are communicating and ready to proceed to simulation...
+Starting 13113 total iterations
+Detected GPU 0: NVIDIA GeForce RTX 4060 Laptop GPU (UUID: 76010ae5-9126-8769-2a7b-33491640914f)
+Estimated memory use on GPU 0 (preliminary): 4.87 GiB
+Estimated memory use on GPU 0 (precise): 
+Fields:   3.24 GiB
+Coeffs:   0.54 GiB
+Monitors: 0.08 GiB
+Sources: 0.08 GiB
+Estimated memory use on the CPU (precise): 
+Fields:   0.00 GiB
+Coeffs:   0.54 GiB
+Monitors: 0.00 GiB
+Sources: 0.00 GiB
+0.00762602% complete. Elapsed simulation time: 7.6263e-17 secs. Max time remaining: 35 hrs, 8 mins, 18 secs. Auto Shutoff: 1
+1.00663% complete. Elapsed simulation time: 1.00667e-14 secs. Max time remaining: 19 mins, 17 secs. Auto Shutoff: 1
+2.00564% complete. Elapsed simulation time: 2.00572e-14 secs. Max time remaining: 11 mins, 16 secs. Auto Shutoff: 1
+3.00465% complete. Elapsed simulation time: 3.00476e-14 secs. Max time remaining: 8 mins, 34 secs. Auto Shutoff: 1
+4.00366% complete. Elapsed simulation time: 4.00381e-14 secs. Max time remaining: 8 mins, 2 secs. Auto Shutoff: 1
+5.00267% complete. Elapsed simulation time: 5.00285e-14 secs. Max time remaining: 7 mins, 2 secs. Auto Shutoff: 1
+6.00168% complete. Elapsed simulation time: 6.0019e-14 secs. Max time remaining: 6 mins, 21 secs. Auto Shutoff: 1
+7.00069% complete. Elapsed simulation time: 7.00094e-14 secs. Max time remaining: 6 mins, 18 secs. Auto Shutoff: 1
+8.00732% complete. Elapsed simulation time: 8.00761e-14 secs. Max time remaining: 5 mins, 51 secs. Auto Shutoff: 1
+9.00633% complete. Elapsed simulation time: 9.00666e-14 secs. Max time remaining: 5 mins, 30 secs. Auto Shutoff: 1
+10.0053% complete. Elapsed simulation time: 1.00057e-13 secs. Max time remaining: 5 mins, 13 secs. Auto Shutoff: 1

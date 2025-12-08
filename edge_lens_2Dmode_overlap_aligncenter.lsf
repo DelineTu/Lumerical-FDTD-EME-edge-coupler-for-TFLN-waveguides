@@ -1,0 +1,105 @@
+clear;
+
+# ===== User settings =====
+mname      = "Lens_facet_2D";    # 2D frequency-domain field monitor (plane)
+field_comp = "Ez";         # pick "Ex","Ey","Ez"
+lambda0    = 1.55e-6;
+f0         = c/lambda0;
+
+# 2D Gaussian reference
+w0 = 1.25e-6;    # 1/e^2 radius
+y0 = 2.5e-6;     # initial guess (will be overwritten)
+z0 = 0;
+
+# ===== Pull monitor data =====
+f  = getdata(mname, "f");
+ix = find(f, f0);
+if (length(ix)==0) { ix = 1 + floor(length(f)/2); }
+
+y = getdata(mname, "y");
+z = getdata(mname, "z");
+Ny = length(y);
+Nz = length(z);
+
+Eall = getdata(mname, field_comp);   # [Ny, Nz, Nf] or permuted
+
+# ---- Extract the field slice ----
+sx1 = size(Eall,1);
+sx2 = size(Eall,2);
+sx3 = size(Eall,3);
+Nf  = length(f);
+
+if (sx3==Nf) {
+  E2 = pinch(Eall, 3, ix);
+} else {
+  if (sx2==Nf) {
+    E2 = pinch(Eall, 2, ix);
+  } else {
+    E2 = pinch(Eall, 1, ix);
+  }
+}
+
+# Orient E2 as [Ny, Nz]
+if (size(E2,1)==Ny) {
+  if (size(E2,2)==Nz) { E = E2; }
+  else { E = transpose(E2); }
+} else {
+  if (size(E2,1)==Nz & size(E2,2)==Ny) { E = transpose(E2); }
+  else { E = E2; }
+}
+
+E = E(:,:);
+
+# ===== Build 2D Gaussian on (y,z) grid =====
+dy = y(2)-y(1);
+dz = z(2)-z(1);
+
+Y = matrix(Ny, Nz);
+Z = matrix(Ny, Nz);
+for (iy=1; iy<=Ny; iy=iy+1) {
+  for (iz=1; iz<=Nz; iz=iz+1) {
+    Y(iy,iz) = y(iy);
+    Z(iy,iz) = z(iz);
+  }
+}
+
+# ----- Intensity-maximum centering (arg-max of |E|^2) -----
+Eint = abs(E)^2;                         # Ny x Nz intensity
+cmax = max(max(Eint));
+idx  = find(Eint == cmax);
+if (length(idx)>1) { idx = idx(1); }    # take first in case of ties
+
+# Map linear index -> (iy, iz) in column-major (MATLAB/Lumerical) order:
+# idx = iy + (iz-1)*Ny  =>  iy = 1 + mod(idx-1, Ny);  iz = 1 + floor((idx-1)/Ny)
+iy_max = 1 + mod(idx-1, Ny);
+iz_max = 1 + floor((idx-1)/Ny);
+
+y0 = y(iy_max);
+z0 = z(iz_max);
+
+?"[Arg-max] y0 = " + num2str(y0) + " m,  z0 = " + num2str(z0) + " m";
+
+# ----- Rebuild Gaussian centered at (y0,z0) -----
+Eg = exp( - ( ((Y - y0)^2 + (Z - z0)^2) ) / (w0^2) );
+
+# ----- Overlap (unchanged) -----
+Pw  = sum(sum(abs(E )^2)) * dy * dz;
+Pg  = sum(sum(abs(Eg)^2)) * dy * dz;
+num = sum(sum(E * conj(Eg))) * dy * dz;
+eta_2D = abs(num)^2 / (Pw * Pg);
+
+?"2D overlap efficiency (arg-max aligned, component "+field_comp+") = " + num2str(eta_2D);
+
+# ----- 2D intensity maps -----
+yv = y(1:Ny);
+zv = z(1:Nz);
+
+Eint  = abs(E)^2;
+Egint = abs(Eg)^2;
+cmax  = max(max(Eint));
+
+# Simulated |E|^2
+image(zv*1e6, yv*1e6, transpose(Eint));
+
+# Reference Gaussian |Eg|^2
+image(zv*1e6, yv*1e6, transpose(Egint));

@@ -1,0 +1,71 @@
+GPU streaming multiprocessors(SMs): 24
+Ansys Lumerical 2024 R1 FDTD Solver Version 8.31.3633 (Windows 64bit)
+ expires (month/day/year): 12/31/2035
+using config file: Ansys Licensing set with ANSYSLMD_LICENSE_FILE
+license host: 1055@localhost
+current time: å‘¨å›› 10æœˆ 30 23:57:51 2025
+Running on host: Hua_Tu
+host available memory (GB): 14.414447
+All processes are communicating and ready to proceed to simulation...
+Running fsp file: D:\Program Files\Lumerical\v241\bin\fdtd-engine.exe -gpu -t 1 -remote -shared-solve-license QU5TWVNfTElDRU5TSU5HX0NPTlRFWFRfREFUQT08QU5TWVNfTElDRU5TSU5HX0NPTlRFWFRfREFUQT48SUQ+ZjYzMjA5ZDctMWE3NC00ZjFhLTk3NWEtYzBmY2ZmODhlN2E1PC9JRD48VFlQRT5IUENfUEFSQU1FVFJJQzwvVFlQRT48TkFNRT5IUEMgUGFyYW1ldHJpYzwvTkFNRT48SEFORExFUj41MTkyNUBIdWFfVHU8L0hBTkRMRVI+PC9BTlNZU19MSUNFTlNJTkdfQ09OVEVYVF9EQVRBPgo= E:/FDTD_Files/edge_lens_3D_fy_all_shape - å‰¯æœ¬.fsp
+Starting meshing
+Simulation size in gridpoints: 1 x 52 x 127
+Refined 0 mesh cells (0%)
+Completed meshing!
+Meshing complete in 0.015625 seconds of CPU time
+Starting meshing
+Simulation size in gridpoints: 1 x 52 x 127
+Refined 0 mesh cells (0%)
+Completed meshing!
+Meshing complete in 0 seconds of CPU time
+Starting meshing
+Simulation size in gridpoints: 1 x 52 x 127
+Refined 0 mesh cells (0%)
+Completed meshing!
+Meshing complete in 0.015625 seconds of CPU time
+number of processors is 1
+processors are distributed as: 1x1x1
+Running 3D Simulation
+Starting meshing
+Simulation size in gridpoints: 423 x 212 x 200
+Refined 0 mesh cells (0%)
+Completed meshing!
+Meshing complete in 1.875 seconds of CPU time
+Starting meshing
+Simulation size in gridpoints: 423 x 212 x 200
+Refined 0 mesh cells (0%)
+Completed meshing!
+Meshing complete in 3.45312 seconds of CPU time
+Starting meshing
+Simulation size in gridpoints: 423 x 212 x 200
+Refined 0 mesh cells (0%)
+Completed meshing!
+Meshing complete in 2.85938 seconds of CPU time
+finished material properties
+Meshing Time: 17.4584 seconds, Init Electrical Material Time: 0 seconds, Init Magnetic Material Time: 0
+Using selected optimization level: 2
+Selecting 3d kernel for splitFieldDirection=0 and optLevel=2
+-----------------------------------------
+Beginning initialization of 3D Simulation
+Starting to add sources to simulation
+Adding 3D Mode source propagating in X
+Starting to add boundary conditions to simulation
+Adding 3D PML BC
+Adding 3D PML BC
+Adding 3D PML BC
+Adding 3D PML BC
+Adding 3D PML BC
+Adding 3D PML BC
+Starting to add monitors to Simulation
+Adding analysis monitor
+Adding 3D DFT monitor
+Adding 3D DFT monitor
+Adding 3D DFT monitor
+Adding 3D DFT monitor
+Finished initialization of 3D Simulation
+-----------------------------------------
+All processes are communicating and ready to proceed to simulation...
+Starting 13113 total iterations
+Detected GPU 0: NVIDIA GeForce RTX 4060 Laptop GPU (UUID: 76010ae5-9126-8769-2a7b-33491640914f)
+Estimated memory use on GPU 0 (preliminary): 1.83 GiB
+ERROR: current_path(const path&): ÏµÍ³ÕÒ²»µ½Ö¸¶¨µÄÎÄ¼þ¡£: "E:/FDTD_Files/edge_lens_3D_fy_all_shape - å‰¯æœ¬"

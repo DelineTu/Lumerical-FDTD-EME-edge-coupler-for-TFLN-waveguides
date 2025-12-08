@@ -1,0 +1,134 @@
+clear;
+
+# ===== User settings =====
+sgroup     = "lens";
+pname      = "C2";                # geometry parameter name to sweep
+C0_list  = linspace(-400, -100, 2);     # your scan list
+
+m_line     = "Lens_facet_2D";     # 2D freq-domain field monitor (yz plane)
+m_power    = "Forward";           # power/Transmission monitor
+field_comp = "Ez";                # "Ex","Ey","Ez" as needed
+
+lambda0 = 1.55e-6;
+f0      = c/lambda0;
+
+# 2D Gaussian reference (1/e^2 diameter = 2.5 um => w0 = 1.25 um)
+w0 = 1.25e-6;
+y0 = 0;
+z0 = 0;
+
+# ===== sweep list =====
+eta_list = zeros(1, length(C0_list));
+T_list   = zeros(1, length(C0_list));
+
+# ===== helper: nearest index =====
+function near_idx(v, x){
+  idx = find(v, x);
+  if (length(idx)==0) { return 1+floor(length(v)/2); }
+  return idx(1);
+}
+
+# ===== sweep =====
+for (n=1:length(C0_list)) {
+  C0 = C0_list(n);
+  switchtolayout;
+  setnamed(sgroup, pname, C0);
+  run;
+
+  # --- (A) 2D overlap on yz-plane ---
+  f  = getdata(m_line, "f");
+  ix = near_idx(f, f0);
+
+  y = getdata(m_line, "y");
+  z = getdata(m_line, "z");
+  Ny = length(y);
+  Nz = length(z);
+
+  Eall = getdata(m_line, field_comp);   # [Ny,Nz,Nf] (or permuted)
+
+  # Pick freq slice
+  sx1 = size(Eall,1);
+  sx2 = size(Eall,2);
+  sx3 = size(Eall,3);
+  Nf  = length(f);
+  if (sx3==Nf) {
+    E2 = pinch(Eall, 3, ix);
+  } else {
+    if (sx2==Nf) { E2 = pinch(Eall, 2, ix); }
+    else { E2 = pinch(Eall, 1, ix); }
+  }
+
+  # Orient as [Ny,Nz]
+  if (size(E2,1)==Ny) {
+    if (size(E2,2)==Nz) { E = E2; }
+    else { E = transpose(E2); }
+  } else {
+    if (size(E2,1)==Nz & size(E2,2)==Ny) { E = transpose(E2); }
+    else {
+      # fallback truncate
+     # fallback truncate
+        if (size(E2,1) < Ny) {
+        ny = size(E2,1);
+        } else {
+        ny = Ny;
+        }
+        
+        if (size(E2,2) < Nz) {
+        nz = size(E2,2);
+        } else {
+        nz = Nz;
+        }
+        
+        E  = E2(1:ny,1:nz);
+        y  = y(1:ny);
+        z  = z(1:nz);
+        Ny = ny;
+        Nz = nz;
+        }
+    }
+  E = E(:,:);
+
+  dy = y(2)-y(1);
+  dz = z(2)-z(1);
+
+  # Build (y,z) grids
+  Y = matrix(Ny, Nz);
+  Z = matrix(Ny, Nz);
+  for (iy=1:Ny) {
+    for (iz=1:Nz) {
+      Y(iy,iz) = y(iy);
+      Z(iy,iz) = z(iz);
+    }
+  }
+
+  Eg = exp( - ( ((Y - y0)^2 + (Z - z0)^2) ) / (w0^2) );
+
+  Pw  = sum(sum(abs(E )^2)) * dy * dz;
+  Pg  = sum(sum(abs(Eg)^2)) * dy * dz;
+  num = sum(sum(E * conj(Eg))) * dy * dz;
+  eta = abs(num)^2 / (Pw * Pg);
+  eta_list(n) = eta;
+
+  # --- (B) forward transmission at f0 ---
+  R  = getresult(m_power, "T");
+  fi = near_idx(R.f, f0);
+  if (size(R.T,2)==length(R.f)) {
+    Tn = real(pinch(R.T, 2, fi));
+  } else {
+    Tn = real(R.T(fi));
+  }
+  T_list(n) = Tn;
+
+  ?("param("+pname+")="+num2str(C0)+" | eta2D="+num2str(eta)+" | T="+num2str(Tn));
+}
+
+# ===== final plots =====
+# Overlap vs parameter
+
+plot(C0_list, eta_list, "o-");
+setplot("title", "2D Gaussian overlap vs "+pname);
+
+# Transmission vs parameter
+
+plot(C0_list, T_list, "s-");
+setplot("title", "Forward transmission vs "+pname);

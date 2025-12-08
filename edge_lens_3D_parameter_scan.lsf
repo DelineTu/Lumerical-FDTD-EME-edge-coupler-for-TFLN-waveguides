@@ -1,0 +1,156 @@
+clear;
+
+# ===== User settings =====
+sgroup     = "lens";
+m_line     = "Lens_facet_2D";     # 2D freq-domain field monitor (yz plane)
+m_power    = "Forward";           # power/Transmission monitor
+field_comp = "Ez";                # "Ex","Ey","Ez" as needed
+
+lambda0 = 1.55e-6;
+f0      = c/lambda0;
+
+# ===== parameter ranges =====
+C0_list   = linspace(3.5e-6, 3.5e-6, 1);   # [m]
+C2_list   = linspace(-300, -300, 1);       # [nm]
+Rmax_list = linspace(3e-6, 3e-6, 1);       # [m]
+
+# ===== Gaussian reference =====
+w0 = 1.25e-6;   # 1/e^2 radius
+
+# ===== prepare CSV header =====
+#results_file = "scan_results_centered.txt";
+#write(results_file, "C0,C2,Rmax,eta_2D,eta_y,T,y_center(m),z_center(m)");
+
+# ===== helper: nearest frequency index =====
+function near_idx(v, x){
+  idx = find(v, x);
+  if (length(idx)==0) { return 1+floor(length(v)/2); }
+  return idx(1);
+}
+
+# ===== main nested parameter sweep =====
+for (i=1:length(C0_list)) {
+  for (j=1:length(C2_list)) {
+    for (k=1:length(Rmax_list)) {
+
+      C0   = C0_list(i);
+      C2   = C2_list(j);
+      Rmax = Rmax_list(k);
+
+      switchtolayout;
+      setnamed(sgroup,"C0",C0);
+      setnamed(sgroup,"C2",C2);
+      setnamed(sgroup,"Rmax",Rmax);
+      run;
+
+      # --- (A) get 2D field data ---
+      f  = getdata(m_line, "f");
+      ix = near_idx(f, f0);
+      y  = getdata(m_line, "y");
+      z  = getdata(m_line, "z");
+      Ny = length(y);
+      Nz = length(z);
+
+      Eall = getdata(m_line, field_comp);
+      sx1 = size(Eall,1);
+      sx2 = size(Eall,2);
+      sx3 = size(Eall,3);
+      Nf  = length(f);
+      if (sx3==Nf) {
+        E2 = pinch(Eall, 3, ix);
+      } else {
+        if (sx2==Nf) { E2 = pinch(Eall, 2, ix); }
+        else { E2 = pinch(Eall, 1, ix); }
+      }
+
+      # Orient as [Ny,Nz]
+      if (size(E2,1)==Ny) {
+        if (size(E2,2)==Nz) { E = E2; }
+        else { E = transpose(E2); }
+      } else {
+        if (size(E2,1)==Nz & size(E2,2)==Ny) { E = transpose(E2); }
+        else {
+          if (size(E2,1) < Ny) { ny = size(E2,1); } else { ny = Ny; }
+          if (size(E2,2) < Nz) { nz = size(E2,2); } else { nz = Nz; }
+          E  = E2(1:ny,1:nz);
+          y  = y(1:ny);
+          z  = z(1:nz);
+          Ny = ny;
+          Nz = nz;
+        }
+      }
+      E = E(:,:);
+
+      dy = y(2)-y(1);
+      dz = z(2)-z(1);
+
+      # --- (B) find center of intensity ---
+      I = abs(E)^2;
+      Iy = sum(I,2);
+      iy_center = find(Iy, max(Iy));
+      y_center = y(iy_center);
+
+      Iz = sum(I,1);
+      iz_center = find(Iz, max(Iz));
+      z_center = z(iz_center);
+
+      # ===================================================
+      # === (C1) original 2D overlap calculation (commented)
+      # ===================================================
+      #
+      # Y = matrix(Ny, Nz);
+      # Z = matrix(Ny, Nz);
+      # for (iy=1:Ny) {
+      #   for (iz=1:Nz) {
+      #     Y(iy,iz)=y(iy);
+      #     Z(iy,iz)=z(iz);
+      #   }
+      # }
+      # Eg = exp( - ( ((Y - y_center)^2 + (Z - z_center)^2) ) / (w0^2) );
+      # Pw  = sum(sum(abs(E)^2)) * dy * dz;
+      # Pg  = sum(sum(abs(Eg)^2)) * dy * dz;
+      # num = sum(sum(E * conj(Eg))) * dy * dz;
+      # eta = abs(num)^2 / (Pw * Pg);
+
+      # ===================================================
+      # === (C2) NEW: y-direction overlap (line integral)
+      # ===================================================
+      Ey_line = sum(E,2)*dz;            # integrate along z
+      Eg_line = exp( -((y - y_center)^2) / (w0^2) );
+      Pw_y  = sum(abs(Ey_line)^2)*dy;
+      Pg_y  = sum(abs(Eg_line)^2)*dy;
+      num_y = sum(Ey_line * conj(Eg_line))*dy;
+      eta_y = abs(num_y)^2 / (Pw_y * Pg_y);
+
+      # ===================================================
+      # === (D) forward transmission ===
+      # ===================================================
+      R  = getresult(m_power,"T");
+      fi = near_idx(R.f, f0);
+      if (size(R.T,2)==length(R.f)) {
+        Tn = real(pinch(R.T, 2, fi));
+      } else {
+        Tn = real(R.T(fi));
+      }
+
+      # ===================================================
+      # === (E) print results ===
+      # ===================================================
+      ?("η_y="+num2str(eta_y,"%.5f")+"|T="+num2str(Tn,"%.5f")
+        +"|T*η_y="+num2str(eta_y*Tn,"%.5f")
+        +"|C0="+num2str(C0,"%.2e")+",C2="+num2str(C2,"%.2e")+",Rmax="+num2str(Rmax,"%.2e")
+        +"|y_c="+num2str(y_center*1e6,"%.3f")+"µm,z_c="+num2str(z_center*1e6,"%.3f")+"µm"
+        );
+
+      # ===================================================
+      # === (F) write to file ===
+      # ===================================================
+      #append(results_file,
+       # num2str(C0)+","+num2str(C2)+","+num2str(Rmax)+","
+       # +num2str(0)+","+num2str(eta_y)+","+num2str(Tn)+","
+       # +num2str(y_center)+","+num2str(z_center));
+    }
+  }
+}
+
+
